@@ -1,0 +1,9 @@
+.gradle
+/local.properties
+/reddit.properties
+/app/src/main/assets/reddit.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
