@@ -1,12 +1,8 @@
 package codes.carl.read;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -14,26 +10,14 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import net.dean.jraw.RedditClient;
-import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.http.UserAgent;
-import net.dean.jraw.http.oauth.Credentials;
-import net.dean.jraw.http.oauth.OAuthData;
-import net.dean.jraw.http.oauth.OAuthException;
-import net.dean.jraw.http.oauth.OAuthHelper;
 import net.dean.jraw.models.Listing;
-import net.dean.jraw.models.LoggedInAccount;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.paginators.SubredditPaginator;
-
-import java.net.URL;
 
 public class List extends AppCompatActivity {
 
@@ -61,7 +45,7 @@ public class List extends AppCompatActivity {
         protected Listing<Submission> doInBackground(String... params) {
 
             while(!Application.reddit.isAuthenticated()){
-                System.out.println("Wait");
+                Application.reddit.isAuthenticated();
             }
 
             reddit = Application.reddit;
@@ -95,7 +79,7 @@ public class List extends AppCompatActivity {
                 rowView = convertView;
             }
 
-            sub = (Submission)getItem(position);
+            sub = getItem(position);
 
             TextView title = (TextView)rowView.findViewById(R.id.title);
             TextView upvotes = (TextView)rowView.findViewById(R.id.upvotes);
