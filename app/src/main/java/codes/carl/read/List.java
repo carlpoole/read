@@ -37,6 +37,7 @@ public class List extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Todo: Use Butterknife for view pairing
         posts = (ListView) findViewById(R.id.posts);
         posts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -53,6 +54,10 @@ public class List extends AppCompatActivity {
 
         new GetSubmissions().execute();
 
+        // Todo: pull down to refresh
+
+        // Todo: pull up to load more
+
     }
 
     private class GetSubmissions extends AsyncTask<String, Void, Listing<Submission>> {
@@ -60,6 +65,9 @@ public class List extends AppCompatActivity {
         @Override
         protected Listing<Submission> doInBackground(String... params) {
 
+            // Todo: add a loading indicator
+
+            // Todo: Do this part better...
             while (!Application.reddit.isAuthenticated()) {
                 Application.reddit.isAuthenticated();
             }

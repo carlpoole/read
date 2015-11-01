@@ -1,21 +1,14 @@
 package codes.carl.read;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.squareup.picasso.Picasso;
 
 import net.dean.jraw.models.Submission;
-import net.dean.jraw.models.meta.SubmissionSerializer;
-
 import java.io.IOException;
 
 public class SubmissionView extends AppCompatActivity {
@@ -35,6 +28,7 @@ public class SubmissionView extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // Todo: rough test right now. Make more robust, handle more post types
         if(sub.isSelfPost() != null && sub.isSelfPost().booleanValue()){
             TextView textView = (TextView) findViewById(R.id.textPost);
             textView.setText(sub.getSelftext());
