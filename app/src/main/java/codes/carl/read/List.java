@@ -75,7 +75,7 @@ public class List extends AppCompatActivity {
         }
     }
 
-    private class SubmissionAdapter extends ArrayAdapter{
+    private class SubmissionAdapter extends ArrayAdapter<Submission>{
         private LayoutInflater inflater;
 
         public SubmissionAdapter(Activity activity, Listing<Submission> submissions){
