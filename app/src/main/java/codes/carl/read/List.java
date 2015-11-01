@@ -11,8 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.models.Listing;
@@ -83,8 +86,13 @@ public class List extends AppCompatActivity {
 
             TextView title = (TextView)rowView.findViewById(R.id.title);
             TextView upvotes = (TextView)rowView.findViewById(R.id.upvotes);
+            TextView user = (TextView)rowView.findViewById(R.id.user);
+            ImageView thumb = (ImageView)rowView.findViewById(R.id.thumbnail);
+
             title.setText(sub.getTitle());
             upvotes.setText(String.valueOf(sub.getScore()));
+            user.setText(sub.getAuthor());
+            Picasso.with(List.this).load(sub.getThumbnail()).into(thumb);
             return rowView;
 
         }
