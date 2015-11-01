@@ -92,7 +92,12 @@ public class List extends AppCompatActivity {
             title.setText(sub.getTitle());
             upvotes.setText(String.valueOf(sub.getScore()));
             user.setText(sub.getAuthor());
-            Picasso.with(List.this).load(sub.getThumbnail()).into(thumb);
+
+            if(sub.getThumbnail()!=null)
+                Picasso.with(List.this).load(sub.getThumbnail()).into(thumb);
+            else
+                Picasso.with(List.this).load(R.drawable.defaultsub).into(thumb);
+
             return rowView;
 
         }

@@ -8,11 +8,13 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
-        android:contentDescription="Submission Thumbna" />
+        android:src="@drawable/defaultsub"
+        android:contentDescription="Submission Thumbnail" />
 
     <TextView
         android:id="@+id/title"
         android:layout_toRightOf="@+id/thumbnail"
+        android:paddingStart="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Post Title"/>
@@ -21,6 +23,7 @@
         android:id="@+id/upvotes"
         android:layout_below="@+id/title"
         android:layout_toRightOf="@+id/thumbnail"
+        android:paddingStart="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#ff5900"
