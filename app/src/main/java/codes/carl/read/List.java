@@ -1,6 +1,7 @@
 package codes.carl.read;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -36,18 +38,29 @@ public class List extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         posts = (ListView) findViewById(R.id.posts);
+        posts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(List.this, SubmissionView.class);
+                intent.putExtra(
+                        "submission",
+                        ((Submission) posts.getAdapter().getItem(position)).getDataNode().toString());
+                startActivity(intent);
+            }
+        });
+
         Application.authenticate();
 
         new GetSubmissions().execute();
 
     }
 
-    private class GetSubmissions extends AsyncTask<String, Void, Listing<Submission>>{
+    private class GetSubmissions extends AsyncTask<String, Void, Listing<Submission>> {
 
         @Override
         protected Listing<Submission> doInBackground(String... params) {
 
-            while(!Application.reddit.isAuthenticated()){
+            while (!Application.reddit.isAuthenticated()) {
                 Application.reddit.isAuthenticated();
             }
 
@@ -58,15 +71,15 @@ public class List extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Listing<Submission> subs) {
-            posts.setAdapter(new SubmissionAdapter(List.this,subs));
+            posts.setAdapter(new SubmissionAdapter(List.this, subs));
         }
     }
 
-    private class SubmissionAdapter extends ArrayAdapter<Submission>{
+    private class SubmissionAdapter extends ArrayAdapter<Submission> {
         private LayoutInflater inflater;
 
-        public SubmissionAdapter(Activity activity, Listing<Submission> submissions){
-            super(activity,R.layout.row,submissions);
+        public SubmissionAdapter(Activity activity, Listing<Submission> submissions) {
+            super(activity, R.layout.row, submissions);
             inflater = activity.getWindow().getLayoutInflater();
         }
 
@@ -76,24 +89,24 @@ public class List extends AppCompatActivity {
             View rowView;
             Submission sub;
 
-            if(convertView == null){
+            if (convertView == null) {
                 rowView = inflater.inflate(R.layout.row, parent, false);
-            }else{
+            } else {
                 rowView = convertView;
             }
 
             sub = getItem(position);
 
-            TextView title = (TextView)rowView.findViewById(R.id.title);
-            TextView upvotes = (TextView)rowView.findViewById(R.id.upvotes);
-            TextView user = (TextView)rowView.findViewById(R.id.user);
-            ImageView thumb = (ImageView)rowView.findViewById(R.id.thumbnail);
+            TextView title = (TextView) rowView.findViewById(R.id.title);
+            TextView upvotes = (TextView) rowView.findViewById(R.id.upvotes);
+            TextView user = (TextView) rowView.findViewById(R.id.user);
+            ImageView thumb = (ImageView) rowView.findViewById(R.id.thumbnail);
 
             title.setText(sub.getTitle());
             upvotes.setText(String.valueOf(sub.getScore()));
             user.setText(sub.getAuthor());
 
-            if(sub.getThumbnail()!=null)
+            if (sub.getThumbnail() != null)
                 Picasso.with(List.this).load(sub.getThumbnail()).into(thumb);
             else
                 Picasso.with(List.this).load(R.drawable.defaultsub).into(thumb);
