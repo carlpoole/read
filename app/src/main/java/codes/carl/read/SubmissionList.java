@@ -10,7 +10,10 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,6 +61,22 @@ public class SubmissionList extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+
+        toolbar.setOnTouchListener(new View.OnTouchListener() {
+            private GestureDetector gestureDetector = new GestureDetector(SubmissionList.this, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {
+                    posts.setSelectionAfterHeaderView();
+                    return super.onDoubleTap(e);
+                }
+            });
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
 
         if(savedInstanceState != null){
             adapter = new SubmissionAdapter(this,Application.currentPage);
