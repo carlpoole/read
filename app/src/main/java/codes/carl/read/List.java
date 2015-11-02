@@ -24,21 +24,24 @@ import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.paginators.SubredditPaginator;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class List extends AppCompatActivity {
+
+    @Bind(R.id.posts) ListView posts;
+    @Bind(R.id.toolbar) Toolbar toolbar;
 
     RedditClient reddit;
     SubredditPaginator frontPage;
-    ListView posts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        // Todo: Use Butterknife for view pairing
-        posts = (ListView) findViewById(R.id.posts);
         posts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -83,43 +86,54 @@ public class List extends AppCompatActivity {
         }
     }
 
-    private class SubmissionAdapter extends ArrayAdapter<Submission> {
+    public class SubmissionAdapter extends ArrayAdapter<Submission> {
         private LayoutInflater inflater;
 
         public SubmissionAdapter(Activity activity, Listing<Submission> submissions) {
             super(activity, R.layout.row, submissions);
-            inflater = activity.getWindow().getLayoutInflater();
+            this.inflater = activity.getWindow().getLayoutInflater();
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
             View rowView;
+            ViewHolder viewHolder;
             Submission sub;
 
             if (convertView == null) {
                 rowView = inflater.inflate(R.layout.row, parent, false);
+                viewHolder = new ViewHolder(rowView);
+                rowView.setTag(viewHolder);
             } else {
                 rowView = convertView;
+                viewHolder = (ViewHolder)rowView.getTag();
             }
 
             sub = getItem(position);
 
-            TextView title = (TextView) rowView.findViewById(R.id.title);
-            TextView upvotes = (TextView) rowView.findViewById(R.id.upvotes);
-            TextView user = (TextView) rowView.findViewById(R.id.user);
-            ImageView thumb = (ImageView) rowView.findViewById(R.id.thumbnail);
-
-            title.setText(sub.getTitle());
-            upvotes.setText(String.valueOf(sub.getScore()));
-            user.setText(sub.getAuthor());
+            viewHolder.title.setText(sub.getTitle());
+            viewHolder.upvotes.setText(String.valueOf(sub.getScore()));
+            viewHolder.user.setText(sub.getAuthor());
 
             if (sub.getThumbnail() != null)
-                Picasso.with(List.this).load(sub.getThumbnail()).into(thumb);
+                Picasso.with(List.this).load(sub.getThumbnail()).into(viewHolder.thumb);
             else
-                Picasso.with(List.this).load(R.drawable.defaultsub).into(thumb);
+                Picasso.with(List.this).load(R.drawable.defaultsub).into(viewHolder.thumb);
 
             return rowView;
+
+        }
+
+        class ViewHolder{
+            @Bind(R.id.title) TextView title;
+            @Bind(R.id.upvotes) TextView upvotes;
+            @Bind(R.id.user) TextView user;
+            @Bind(R.id.thumbnail) ImageView thumb;
+
+            public ViewHolder(View view){
+                ButterKnife.bind(this,view);
+            }
 
         }
     }
