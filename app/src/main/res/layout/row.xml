@@ -30,7 +30,7 @@
         android:text="Upvotes"/>
 
     <TextView
-        android:id="@+id/user"
+        android:id="@+id/subreddit"
         android:layout_below="@+id/title"
         android:layout_toRightOf="@+id/upvotes"
         android:paddingStart="5dp"

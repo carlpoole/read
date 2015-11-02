@@ -2,6 +2,7 @@ package codes.carl.read;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +18,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Request;
 
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.models.Listing;
@@ -42,14 +45,21 @@ public class List extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
+        Picasso picasso = new Picasso.Builder(this).listener(new Picasso.Listener() {
+            @Override public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
+                exception.printStackTrace();
+            }
+        }).build();
+
         posts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(List.this, SubmissionView.class);
-                intent.putExtra(
-                        "submission",
-                        ((Submission) posts.getAdapter().getItem(position)).getDataNode().toString());
-                startActivity(intent);
+                Submission sub = ((Submission) posts.getAdapter().getItem(position));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(sub.getUrl()));
+                startActivity(browserIntent);
+//                Intent intent = new Intent(List.this, SubmissionView.class);
+//                intent.putExtra("submission", sub.getDataNode().toString());
+//                startActivity(intent);
             }
         });
 
@@ -77,6 +87,7 @@ public class List extends AppCompatActivity {
 
             reddit = Application.reddit;
             frontPage = new SubredditPaginator(reddit);
+            frontPage.setLimit(50);
             return frontPage.next();
         }
 
@@ -114,7 +125,7 @@ public class List extends AppCompatActivity {
 
             viewHolder.title.setText(sub.getTitle());
             viewHolder.upvotes.setText(String.valueOf(sub.getScore()));
-            viewHolder.user.setText(sub.getAuthor());
+            viewHolder.subReddit.setText(sub.getSubredditName());
 
             if (sub.getThumbnail() != null)
                 Picasso.with(List.this).load(sub.getThumbnail()).into(viewHolder.thumb);
@@ -128,7 +139,7 @@ public class List extends AppCompatActivity {
         class ViewHolder{
             @Bind(R.id.title) TextView title;
             @Bind(R.id.upvotes) TextView upvotes;
-            @Bind(R.id.user) TextView user;
+            @Bind(R.id.subreddit) TextView subReddit;
             @Bind(R.id.thumbnail) ImageView thumb;
 
             public ViewHolder(View view){

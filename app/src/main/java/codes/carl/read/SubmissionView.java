@@ -1,5 +1,7 @@
 package codes.carl.read;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -33,8 +35,10 @@ public class SubmissionView extends AppCompatActivity {
             TextView textView = (TextView) findViewById(R.id.textPost);
             textView.setText(sub.getSelftext());
         }else {
-            ImageView imagePost = (ImageView) findViewById(R.id.imagePost);
-            Picasso.with(this).load(sub.getUrl()).into(imagePost);
+//            ImageView imagePost = (ImageView) findViewById(R.id.imagePost);
+//            Picasso.with(this).load(sub.getUrl()).into(imagePost);
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(sub.getUrl()));
+            startActivity(browserIntent);
         }
 
     }
