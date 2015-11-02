@@ -8,9 +8,16 @@
     tools:context=".List"
     tools:showIn="@layout/activity_list">
 
-    <ListView
-        android:id="@+id/posts"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiper"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
+        android:layout_height="fill_parent">
+
+        <ListView
+            android:id="@+id/posts"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

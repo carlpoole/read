@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -12,12 +13,12 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 
 import com.squareup.picasso.Picasso;
 
@@ -26,16 +27,21 @@ import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.paginators.SubredditPaginator;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class List extends AppCompatActivity {
+public class SubmissionList extends AppCompatActivity {
 
     @Bind(R.id.posts) ListView posts;
+    @Bind(R.id.swiper) SwipeRefreshLayout swiper;
     @Bind(R.id.toolbar) Toolbar toolbar;
 
     RedditClient reddit;
     SubredditPaginator frontPage;
+    SubmissionAdapter adapter;
+    boolean loadingFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +50,39 @@ public class List extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-
+        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new GetSubmissions().execute();
+            }
+        });
 
         posts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Submission sub = ((Submission) posts.getAdapter().getItem(position));
-//                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(sub.getUrl()));
-//                startActivity(browserIntent);
-                Intent intent = new Intent(List.this, SubmissionView.class);
-                intent.putExtra("submission", sub.getDataNode().toString());
-                startActivity(intent);
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(sub.getUrl()));
+                startActivity(browserIntent);
+//                Intent intent = new Intent(SubmissionList.this, SubmissionView.class);
+//                intent.putExtra("submission", sub.getDataNode().toString());
+//                startActivity(intent);
+            }
+        });
+
+        posts.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount != 0){
+                    if(!loadingFlag){
+                        loadingFlag = true;
+                        loadMoreSubmissions();
+                    }
+                }
             }
         });
 
@@ -66,6 +94,10 @@ public class List extends AppCompatActivity {
 
         // Todo: pull up to load more
 
+    }
+
+    private void loadMoreSubmissions(){
+        new GetMoreSubmissions().execute();
     }
 
     private class GetSubmissions extends AsyncTask<String, Void, Listing<Submission>> {
@@ -88,14 +120,31 @@ public class List extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Listing<Submission> subs) {
-            posts.setAdapter(new SubmissionAdapter(List.this, subs));
+            adapter = new SubmissionAdapter(SubmissionList.this, subs.getChildren());
+            posts.setAdapter(adapter);
+            swiper.setRefreshing(false);
+        }
+    }
+
+    private class GetMoreSubmissions extends AsyncTask<String, Void, Listing<Submission>> {
+
+        @Override
+        protected Listing<Submission> doInBackground(String... params) {
+            return frontPage.next();
+        }
+
+        @Override
+        protected void onPostExecute(Listing<Submission> subs) {
+            adapter.addAll(subs.getChildren());
+            loadingFlag = false;
+            swiper.setRefreshing(false);
         }
     }
 
     public class SubmissionAdapter extends ArrayAdapter<Submission> {
         private LayoutInflater inflater;
 
-        public SubmissionAdapter(Activity activity, Listing<Submission> submissions) {
+        public SubmissionAdapter(Activity activity, List<Submission> submissions) {
             super(activity, R.layout.row, submissions);
             this.inflater = activity.getWindow().getLayoutInflater();
         }
@@ -123,9 +172,9 @@ public class List extends AppCompatActivity {
             viewHolder.subReddit.setText(sub.getSubredditName());
 
             if (sub.getThumbnail() != null)
-                Picasso.with(List.this).load(sub.getThumbnail()).into(viewHolder.thumb);
+                Picasso.with(SubmissionList.this).load(sub.getThumbnail()).into(viewHolder.thumb);
             else
-                Picasso.with(List.this).load(R.drawable.defaultsub).into(viewHolder.thumb);
+                Picasso.with(SubmissionList.this).load(R.drawable.defaultsub).into(viewHolder.thumb);
 
             return rowView;
 
