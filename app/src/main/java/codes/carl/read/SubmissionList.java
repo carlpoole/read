@@ -2,6 +2,8 @@ package codes.carl.read;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import com.squareup.picasso.Picasso;
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
+import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.SubredditPaginator;
 
 import java.util.List;
@@ -178,7 +181,6 @@ public class SubmissionList extends AppCompatActivity {
                 Picasso.with(SubmissionList.this).load(R.drawable.defaultsub).into(viewHolder.thumb);
 
             return rowView;
-
         }
 
         class ViewHolder{
