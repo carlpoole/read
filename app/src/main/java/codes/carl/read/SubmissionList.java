@@ -122,6 +122,7 @@ public class SubmissionList extends AppCompatActivity {
         protected void onPostExecute(Listing<Submission> subs) {
             adapter = new SubmissionAdapter(SubmissionList.this, subs.getChildren());
             posts.setAdapter(adapter);
+            posts.addFooterView(View.inflate(SubmissionList.this, R.layout.list_loading_footer_view, null));
             swiper.setRefreshing(false);
         }
     }
