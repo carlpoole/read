@@ -15,6 +15,8 @@ import java.io.IOException;
 
 public class SubmissionView extends AppCompatActivity {
 
+    Picasso picasso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +27,14 @@ public class SubmissionView extends AppCompatActivity {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode submission = mapper.readTree(getIntent().getStringExtra("submission"));
-            sub = new Submission(submission);
+            final Submission sub1 = new Submission(submission);
+            sub = sub1;
+            picasso = new Picasso.Builder(this).listener(new Picasso.Listener() {
+                @Override public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
+                    exception.printStackTrace();
+                    System.out.println(sub1.getUrl());
+                }
+            }).build();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -35,10 +44,8 @@ public class SubmissionView extends AppCompatActivity {
             TextView textView = (TextView) findViewById(R.id.textPost);
             textView.setText(sub.getSelftext());
         }else {
-//            ImageView imagePost = (ImageView) findViewById(R.id.imagePost);
-//            Picasso.with(this).load(sub.getUrl()).into(imagePost);
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(sub.getUrl()));
-            startActivity(browserIntent);
+            ImageView imagePost = (ImageView) findViewById(R.id.imagePost);
+            picasso.load(sub.getUrl()).into(imagePost);
         }
 
     }

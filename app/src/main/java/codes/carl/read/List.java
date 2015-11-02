@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Request;
 
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.models.Listing;
@@ -45,21 +44,17 @@ public class List extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        Picasso picasso = new Picasso.Builder(this).listener(new Picasso.Listener() {
-            @Override public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                exception.printStackTrace();
-            }
-        }).build();
+
 
         posts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Submission sub = ((Submission) posts.getAdapter().getItem(position));
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(sub.getUrl()));
-                startActivity(browserIntent);
-//                Intent intent = new Intent(List.this, SubmissionView.class);
-//                intent.putExtra("submission", sub.getDataNode().toString());
-//                startActivity(intent);
+//                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(sub.getUrl()));
+//                startActivity(browserIntent);
+                Intent intent = new Intent(List.this, SubmissionView.class);
+                intent.putExtra("submission", sub.getDataNode().toString());
+                startActivity(intent);
             }
         });
 
