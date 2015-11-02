@@ -18,29 +18,29 @@
     <TextView
         android:id="@+id/title"
         android:layout_toRightOf="@+id/thumbnail"
-        android:paddingStart="5dp"
+        android:paddingStart="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Post Title"/>
 
     <TextView
-        android:id="@+id/upvotes"
+        android:id="@+id/createdTime"
         android:layout_below="@+id/title"
         android:layout_toRightOf="@+id/thumbnail"
-        android:paddingStart="5dp"
+        android:paddingStart="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#ff5900"
-        android:text="Upvotes"/>
+        android:text="Created Time"/>
 
     <TextView
         android:id="@+id/subreddit"
         android:layout_below="@+id/title"
-        android:layout_toRightOf="@+id/upvotes"
-        android:paddingStart="5dp"
+        android:layout_toRightOf="@+id/createdTime"
+        android:paddingStart="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#1366da"
-        android:text="Upvotes"/>
+        android:text="Subreddit"/>
 
 </RelativeLayout>

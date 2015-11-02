@@ -10,9 +10,13 @@ import net.dean.jraw.http.UserAgent;
 import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthData;
 import net.dean.jraw.http.oauth.OAuthException;
+import net.dean.jraw.models.Listing;
+import net.dean.jraw.models.Submission;
+import net.dean.jraw.paginators.SubredditPaginator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -23,6 +27,8 @@ public class Application extends android.app.Application {
 
     public static RedditClient reddit;
     public static Credentials credentials;
+    public static SubredditPaginator subredditPaginator;
+    public static ArrayList<Submission> currentPage;
 
     public static void authenticate() {
         new Initiate().execute();

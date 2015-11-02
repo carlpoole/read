@@ -2,8 +2,8 @@ package codes.carl.read;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,7 +18,9 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,11 +29,13 @@ import com.squareup.picasso.Picasso;
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
-import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.SubredditPaginator;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -55,6 +59,18 @@ public class SubmissionList extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
+        if(savedInstanceState != null){
+            adapter = new SubmissionAdapter(this,Application.currentPage);
+            posts.setAdapter(adapter);
+            reddit = Application.reddit;
+            frontPage = Application.subredditPaginator;
+        }else{
+            Application.authenticate();
+            new GetSubmissions().execute();
+        }
+
+        posts.addFooterView(View.inflate(SubmissionList.this, R.layout.list_loading_footer_view, null));
+
         swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -76,28 +92,18 @@ public class SubmissionList extends AppCompatActivity {
 
         posts.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
+            public void onScrollStateChanged(AbsListView view, int scrollState) {}
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount != 0){
-                    if(!loadingFlag){
+                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
+                    if (!loadingFlag) {
                         loadingFlag = true;
                         loadMoreSubmissions();
                     }
                 }
             }
         });
-
-        Application.authenticate();
-
-        new GetSubmissions().execute();
-
-        // Todo: pull down to refresh
-
-        // Todo: pull up to load more
 
     }
 
@@ -109,8 +115,6 @@ public class SubmissionList extends AppCompatActivity {
 
         @Override
         protected Listing<Submission> doInBackground(String... params) {
-
-            // Todo: add a loading indicator
 
             // Todo: Do this part better...
             while (!Application.reddit.isAuthenticated()) {
@@ -127,8 +131,8 @@ public class SubmissionList extends AppCompatActivity {
         protected void onPostExecute(Listing<Submission> subs) {
             adapter = new SubmissionAdapter(SubmissionList.this, subs.getChildren());
             posts.setAdapter(adapter);
-            posts.addFooterView(View.inflate(SubmissionList.this, R.layout.list_loading_footer_view, null));
             swiper.setRefreshing(false);
+            SubmissionList.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
     }
 
@@ -149,10 +153,35 @@ public class SubmissionList extends AppCompatActivity {
 
     public class SubmissionAdapter extends ArrayAdapter<Submission> {
         private LayoutInflater inflater;
+        private ArrayList<Submission> items;
 
         public SubmissionAdapter(Activity activity, List<Submission> submissions) {
             super(activity, R.layout.row, submissions);
             this.inflater = activity.getWindow().getLayoutInflater();
+            items = new ArrayList<>();
+            items.addAll(submissions);
+        }
+
+        public ArrayList<Submission> getItems(){
+            return this.items;
+        }
+
+        @Override
+        public void add(Submission object) {
+            super.add(object);
+            items.add(object);
+        }
+
+        @Override
+        public void addAll(Collection<? extends Submission> collection) {
+            super.addAll(collection);
+            items.addAll(collection);
+        }
+
+        @Override
+        public void addAll(Submission... items) {
+            super.addAll(items);
+            Collections.addAll(this.items,items);
         }
 
         @Override
@@ -174,8 +203,7 @@ public class SubmissionList extends AppCompatActivity {
             sub = getItem(position);
 
             viewHolder.title.setText(sub.getTitle());
-            viewHolder.upvotes.setText(String.valueOf(sub.getScore()));
-            viewHolder.upvotes.setText((new PrettyTime()).format(sub.getCreatedUtc()    ));
+            viewHolder.createdTime.setText((new PrettyTime()).format(sub.getCreatedUtc()));
             viewHolder.subReddit.setText(sub.getSubredditName());
 
             if (sub.getThumbnail() != null)
@@ -188,7 +216,7 @@ public class SubmissionList extends AppCompatActivity {
 
         class ViewHolder{
             @Bind(R.id.title) TextView title;
-            @Bind(R.id.upvotes) TextView upvotes;
+            @Bind(R.id.createdTime) TextView createdTime;
             @Bind(R.id.subreddit) TextView subReddit;
             @Bind(R.id.thumbnail) ImageView thumb;
 
@@ -196,6 +224,14 @@ public class SubmissionList extends AppCompatActivity {
                 ButterKnife.bind(this,view);
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Application.currentPage = adapter.getItems();
+        Application.subredditPaginator = frontPage;
     }
 
     @Override
