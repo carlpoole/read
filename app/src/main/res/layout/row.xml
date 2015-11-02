@@ -43,4 +43,16 @@
         android:textColor="#1366da"
         android:text="Subreddit"/>
 
+    <TextView
+        android:id="@+id/nsfw"
+        android:layout_below="@+id/title"
+        android:layout_toRightOf="@+id/subreddit"
+        android:paddingStart="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#da1313"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        android:text="- NSFW -"/>
+
 </RelativeLayout>

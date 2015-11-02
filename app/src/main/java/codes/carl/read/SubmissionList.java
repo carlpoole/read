@@ -124,6 +124,7 @@ public class SubmissionList extends AppCompatActivity {
             reddit = Application.reddit;
             frontPage = new SubredditPaginator(reddit);
             frontPage.setLimit(50);
+            frontPage.setSubreddit("ALL");
             return frontPage.next();
         }
 
@@ -181,7 +182,7 @@ public class SubmissionList extends AppCompatActivity {
         @Override
         public void addAll(Submission... items) {
             super.addAll(items);
-            Collections.addAll(this.items,items);
+            Collections.addAll(this.items, items);
         }
 
         @Override
@@ -206,6 +207,12 @@ public class SubmissionList extends AppCompatActivity {
             viewHolder.createdTime.setText((new PrettyTime()).format(sub.getCreatedUtc()));
             viewHolder.subReddit.setText(sub.getSubredditName());
 
+            if(sub.isNsfw()){
+                viewHolder.nsfw.setVisibility(View.VISIBLE);
+            }else{
+                viewHolder.nsfw.setVisibility(View.INVISIBLE);
+            }
+
             if (sub.getThumbnail() != null)
                 Picasso.with(SubmissionList.this).load(sub.getThumbnail()).into(viewHolder.thumb);
             else
@@ -218,6 +225,7 @@ public class SubmissionList extends AppCompatActivity {
             @Bind(R.id.title) TextView title;
             @Bind(R.id.createdTime) TextView createdTime;
             @Bind(R.id.subreddit) TextView subReddit;
+            @Bind(R.id.nsfw) TextView nsfw;
             @Bind(R.id.thumbnail) ImageView thumb;
 
             public ViewHolder(View view){
