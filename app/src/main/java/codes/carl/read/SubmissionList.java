@@ -30,6 +30,8 @@ import net.dean.jraw.models.Submission;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.SubredditPaginator;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -173,6 +175,7 @@ public class SubmissionList extends AppCompatActivity {
 
             viewHolder.title.setText(sub.getTitle());
             viewHolder.upvotes.setText(String.valueOf(sub.getScore()));
+            viewHolder.upvotes.setText((new PrettyTime()).format(sub.getCreatedUtc()    ));
             viewHolder.subReddit.setText(sub.getSubredditName());
 
             if (sub.getThumbnail() != null)
@@ -192,7 +195,6 @@ public class SubmissionList extends AppCompatActivity {
             public ViewHolder(View view){
                 ButterKnife.bind(this,view);
             }
-
         }
     }
 

@@ -32,4 +32,5 @@ dependencies {
     compile 'com.android.support:design:23.1.0'
     compile "net.dean.jraw:JRAW:0.7.1"
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'
 }

@@ -95,6 +95,7 @@
     <orderEntry type="library" exported="" name="butterknife-7.0.1" level="project" />
     <orderEntry type="library" exported="" name="guava-18.0" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.5.2" level="project" />
+    <orderEntry type="library" exported="" name="prettytime-3.2.7.Final" level="project" />
     <orderEntry type="library" exported="" name="okhttp-2.3.0" level="project" />
     <orderEntry type="library" exported="" name="jackson-core-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="design-23.1.0" level="project" />
