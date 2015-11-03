@@ -2,8 +2,11 @@ package codes.carl.read;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,8 +45,9 @@ public class SubmissionView extends AppCompatActivity {
         }
 
         if(sub.isSelfPost() != null && sub.isSelfPost().booleanValue()){
-            // Todo: Make Text Scrollable
-            textPost.setText(sub.getSelftext());
+            String text =  sub.getDataNode().get("selftext_html").toString().replaceAll("^\"|\"$", "");
+            textPost.setText(Html.fromHtml(text).toString());
+            textPost.setMovementMethod(new ScrollingMovementMethod());
         }else {
             otherPost.setWebViewClient(new WebViewClient());
             otherPost.setVisibility(View.VISIBLE);
@@ -76,10 +80,11 @@ public class SubmissionView extends AppCompatActivity {
         }
 
         if (id == R.id.comments) {
-            // Todo: Load Comments
+            Intent intent = new Intent(SubmissionView.this, CommentsView.class);
+            intent.putExtra("submission", sub.getDataNode().toString());
+            startActivity(intent);
             return true;
         }
-
 
         return super.onOptionsItemSelected(item);
     }

@@ -100,8 +100,6 @@ public class SubmissionList extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Submission sub = ((Submission) posts.getAdapter().getItem(position));
-//                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(sub.getUrl()));
-//                startActivity(browserIntent);
                 Intent intent = new Intent(SubmissionList.this, SubmissionView.class);
                 intent.putExtra("submission", sub.getDataNode().toString());
                 startActivity(intent);
