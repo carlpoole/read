@@ -1,52 +1,86 @@
 package codes.carl.read;
 
-import android.content.Intent;
-import android.net.Uri;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ImageView;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.picasso.Picasso;
-
 import net.dean.jraw.models.Submission;
 import java.io.IOException;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class SubmissionView extends AppCompatActivity {
 
-    Picasso picasso;
+    @Bind(R.id.textPost) TextView textPost;
+    @Bind(R.id.otherPost) WebView otherPost;
+
+    Submission sub;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submission_view);
-
-        Submission sub = null;
+        ButterKnife.bind(this);
 
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode submission = mapper.readTree(getIntent().getStringExtra("submission"));
-            final Submission sub1 = new Submission(submission);
-            sub = sub1;
-            picasso = new Picasso.Builder(this).listener(new Picasso.Listener() {
-                @Override public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                    exception.printStackTrace();
-                    System.out.println(sub1.getUrl());
-                }
-            }).build();
+            sub = new Submission(submission);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Todo: rough test right now. Make more robust, handle more post types
         if(sub.isSelfPost() != null && sub.isSelfPost().booleanValue()){
-            TextView textView = (TextView) findViewById(R.id.textPost);
-            textView.setText(sub.getSelftext());
+            // Todo: Make Text Scrollable
+            textPost.setText(sub.getSelftext());
         }else {
-            ImageView imagePost = (ImageView) findViewById(R.id.imagePost);
-            picasso.load(sub.getUrl()).into(imagePost);
+            otherPost.setWebViewClient(new WebViewClient());
+            otherPost.setVisibility(View.VISIBLE);
+            otherPost.getSettings().setDomStorageEnabled(true);
+            otherPost.getSettings().setJavaScriptEnabled(true);
+            otherPost.getSettings().setLoadWithOverviewMode(true);
+            otherPost.getSettings().setUseWideViewPort(true);
+            otherPost.loadUrl(sub.getUrl());
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_subview, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.share) {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("url", sub.getUrl());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(SubmissionView.this, "Copied to Clipboard", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if (id == R.id.comments) {
+            // Todo: Load Comments
+            return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 }

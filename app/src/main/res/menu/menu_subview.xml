@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".List">
+
+    <item
+        android:icon="@android:drawable/stat_notify_chat"
+        android:id="@+id/comments"
+        android:orderInCategory="50"
+        android:title="Comments"
+        app:showAsAction="always" />
+
+    <item
+        android:icon="@android:drawable/stat_sys_upload_done"
+        android:id="@+id/share"
+        android:orderInCategory="100"
+        android:title="Share"
+        app:showAsAction="always" />
+
+</menu>
