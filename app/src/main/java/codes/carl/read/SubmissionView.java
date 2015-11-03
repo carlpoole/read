@@ -44,8 +44,10 @@ public class SubmissionView extends AppCompatActivity {
             TextView textView = (TextView) findViewById(R.id.textPost);
             textView.setText(sub.getSelftext());
         }else {
+            String data = sub.getDataNode().get("preview").get("images").elements().next().get("source").get("url").toString();
+            data = data.substring(0,data.indexOf("?"));
             ImageView imagePost = (ImageView) findViewById(R.id.imagePost);
-            picasso.load(sub.getUrl()).into(imagePost);
+            picasso.load(data).into(imagePost);
         }
 
     }
