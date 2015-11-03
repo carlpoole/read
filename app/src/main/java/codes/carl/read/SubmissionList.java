@@ -124,7 +124,7 @@ public class SubmissionList extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 Submission sub = ((Submission) posts.getAdapter().getItem(position));
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("url", sub.getUrl());
+                ClipData clip = ClipData.newPlainText("url", sub.getShortURL());
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(SubmissionList.this, "Copied to Clipboard", Toast.LENGTH_SHORT).show();
                 return true;
