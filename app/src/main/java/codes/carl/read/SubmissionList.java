@@ -1,21 +1,16 @@
 package codes.carl.read;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,14 +18,10 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,8 +39,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import javax.xml.datatype.Duration;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -251,14 +240,15 @@ public class SubmissionList extends AppCompatActivity {
 
             if(sub.isNsfw()){
                 viewHolder.nsfw.setVisibility(View.VISIBLE);
+                viewHolder.thumb.setImageResource(R.drawable.redditnsfw);
+
             }else{
-                viewHolder.nsfw.setVisibility(View.INVISIBLE);
+                viewHolder.nsfw.setVisibility(View.GONE);
+                viewHolder.thumb.setImageResource(R.drawable.defaultsub);
             }
 
             if (sub.getThumbnail() != null)
                 Picasso.with(SubmissionList.this).load(sub.getThumbnail()).into(viewHolder.thumb);
-            else
-                Picasso.with(SubmissionList.this).load(R.drawable.defaultsub).into(viewHolder.thumb);
 
             return rowView;
         }

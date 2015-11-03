@@ -16,7 +16,19 @@
         android:contentDescription="Submission Thumbnail" />
 
     <TextView
+        android:id="@+id/nsfw"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:paddingStart="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorNSFW"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:text="NSFW"/>
+
+    <TextView
         android:id="@+id/title"
+        android:layout_below="@+id/nsfw"
         android:layout_toRightOf="@+id/thumbnail"
         android:paddingStart="10dp"
         android:layout_width="wrap_content"
@@ -30,7 +42,7 @@
         android:paddingStart="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#ff5900"
+        android:textColor="@color/colorAccent"
         android:text="Created Time"/>
 
     <TextView
@@ -40,19 +52,8 @@
         android:paddingStart="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#1366da"
+        android:textColor="@color/colorPrimary"
         android:text="Subreddit"/>
 
-    <TextView
-        android:id="@+id/nsfw"
-        android:layout_below="@+id/title"
-        android:layout_toRightOf="@+id/subreddit"
-        android:paddingStart="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#da1313"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        android:text="- NSFW -"/>
 
 </RelativeLayout>
