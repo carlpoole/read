@@ -9,26 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.picasso.Picasso;
-
 import net.dean.jraw.models.Comment;
 import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.Submission;
-
-import org.ocpsoft.prettytime.PrettyTime;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -58,7 +50,6 @@ public class CommentsView extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private class GetComments extends AsyncTask<String, Void, CommentNode> {
@@ -142,6 +133,7 @@ public class CommentsView extends AppCompatActivity {
                     5.0f,
                     getResources().getDisplayMetrics());
 
+            // Todo: Make comment tree/child handling better - just indents right now
             viewHolder.author.setPadding(dp10 + (commentNode.getDepth() * dp5), 0, 0, 0);
             viewHolder.body.setPadding(dp10 + (commentNode.getDepth() * dp5), 0, 0, 0);
 

@@ -45,8 +45,9 @@ public class SubmissionView extends AppCompatActivity {
         }
 
         if(sub.isSelfPost() != null && sub.isSelfPost().booleanValue()){
-            String text =  sub.getDataNode().get("selftext_html").toString().replaceAll("^\"|\"$", "");
-            textPost.setText(Html.fromHtml(text).toString());
+//            String text =  sub.getDataNode().get("selftext_html").toString().replaceAll("^\"|\"$", "");
+//            textPost.setText(Html.fromHtml(text).toString());
+            textPost.setText(sub.getSelftext());
             textPost.setMovementMethod(new ScrollingMovementMethod());
         }else {
             otherPost.setWebViewClient(new WebViewClient());

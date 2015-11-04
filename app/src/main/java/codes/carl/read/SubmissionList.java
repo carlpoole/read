@@ -109,11 +109,17 @@ public class SubmissionList extends AppCompatActivity {
         posts.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
                 Submission sub = ((Submission) posts.getAdapter().getItem(position));
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("url", sub.getShortURL());
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(SubmissionList.this, "Copied to Clipboard", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SubmissionList.this, CommentsView.class);
+                intent.putExtra("submission", sub.getDataNode().toString());
+                startActivity(intent);
+                
+//                Submission sub = ((Submission) posts.getAdapter().getItem(position));
+//                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+//                ClipData clip = ClipData.newPlainText("url", sub.getShortURL());
+//                clipboard.setPrimaryClip(clip);
+//                Toast.makeText(SubmissionList.this, "Copied to Clipboard", Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
@@ -246,7 +252,10 @@ public class SubmissionList extends AppCompatActivity {
             }
 
             if (sub.getThumbnail() != null)
-                Picasso.with(SubmissionList.this).load(sub.getThumbnail()).into(viewHolder.thumb);
+                Picasso.with(SubmissionList.this)
+                        .load(sub.getThumbnail())
+
+                        .into(viewHolder.thumb);
 
             return rowView;
         }
@@ -272,25 +281,4 @@ public class SubmissionList extends AppCompatActivity {
         Application.subredditPaginator = frontPage;
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_list, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 }
