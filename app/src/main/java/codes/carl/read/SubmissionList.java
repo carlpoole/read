@@ -1,11 +1,8 @@
 package codes.carl.read;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,8 +12,6 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -27,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.wdullaer.swipeactionadapter.SwipeActionAdapter;
+import com.wdullaer.swipeactionadapter.SwipeDirections;
 
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.models.Listing;
@@ -52,6 +49,7 @@ public class SubmissionList extends AppCompatActivity {
     RedditClient reddit;
     SubredditPaginator frontPage;
     SubmissionAdapter adapter;
+    SwipeActionAdapter swipeAdapter;
     boolean loadingFlag;
 
     @Override
@@ -80,6 +78,7 @@ public class SubmissionList extends AppCompatActivity {
         if(savedInstanceState != null){
             adapter = new SubmissionAdapter(this,Application.currentPage);
             posts.setAdapter(adapter);
+            setupAdapter();
             reddit = Application.reddit;
             frontPage = Application.subredditPaginator;
         }else{
@@ -114,29 +113,8 @@ public class SubmissionList extends AppCompatActivity {
                 Intent intent = new Intent(SubmissionList.this, CommentsView.class);
                 intent.putExtra("submission", sub.getDataNode().toString());
                 startActivity(intent);
-                
-//                Submission sub = ((Submission) posts.getAdapter().getItem(position));
-//                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-//                ClipData clip = ClipData.newPlainText("url", sub.getShortURL());
-//                clipboard.setPrimaryClip(clip);
-//                Toast.makeText(SubmissionList.this, "Copied to Clipboard", Toast.LENGTH_SHORT).show();
+
                 return true;
-            }
-        });
-
-        posts.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
-                    if (!loadingFlag) {
-                        loadingFlag = true;
-                        loadMoreSubmissions();
-                    }
-                }
             }
         });
 
@@ -166,10 +144,73 @@ public class SubmissionList extends AppCompatActivity {
         @Override
         protected void onPostExecute(Listing<Submission> subs) {
             adapter = new SubmissionAdapter(SubmissionList.this, subs.getChildren());
-            posts.setAdapter(adapter);
+            setupAdapter();
             swiper.setRefreshing(false);
             SubmissionList.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
+    }
+
+    private void setupAdapter(){
+        swipeAdapter = new SwipeActionAdapter(adapter);
+        swipeAdapter.setListView(posts);
+        posts.setAdapter(swipeAdapter);
+
+        swipeAdapter.addBackground(SwipeDirections.DIRECTION_NORMAL_LEFT, R.layout.row_bg_left_far)
+                .addBackground(SwipeDirections.DIRECTION_NORMAL_RIGHT, R.layout.row_bg_right_far);
+
+        swipeAdapter.setSwipeActionListener(new SwipeActionAdapter.SwipeActionListener() {
+            @Override
+            public boolean hasActions(int position) {
+                // All items can be swiped
+                return true;
+            }
+
+            @Override
+            public boolean shouldDismiss(int position, int direction) {
+                // Only dismiss an item when swiping normal left
+                return false;
+                //return direction == SwipeDirections.DIRECTION_NORMAL_LEFT;
+            }
+
+            @Override
+            public void onSwipe(int[] positionList, int[] directionList) {
+                for (int i = 0; i < positionList.length; i++) {
+                    int direction = directionList[i];
+                    int position = positionList[i];
+
+                    switch (direction) {
+                        case SwipeDirections.DIRECTION_FAR_LEFT:
+                        case SwipeDirections.DIRECTION_NORMAL_LEFT:
+                            Toast.makeText(SubmissionList.this, "Downvote", Toast.LENGTH_SHORT).show();
+                            break;
+                        case SwipeDirections.DIRECTION_FAR_RIGHT:
+                        case SwipeDirections.DIRECTION_NORMAL_RIGHT:
+                            Toast.makeText(SubmissionList.this, "Upvote", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+
+                    //swipeAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        swipeAdapter.setDimBackgrounds(true);
+
+        posts.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
+                    if (!loadingFlag) {
+                        loadingFlag = true;
+                        loadMoreSubmissions();
+                    }
+                }
+            }
+        });
     }
 
     private class GetMoreSubmissions extends AsyncTask<String, Void, Listing<Submission>> {
@@ -241,6 +282,7 @@ public class SubmissionList extends AppCompatActivity {
             viewHolder.title.setText(sub.getTitle());
             viewHolder.createdTime.setText((new PrettyTime()).format(sub.getCreatedUtc()));
             viewHolder.subReddit.setText(sub.getSubredditName());
+            viewHolder.upVotes.setText("↑"+ String.valueOf(sub.getScore()));
 
             if(sub.isNsfw()){
                 viewHolder.nsfw.setVisibility(View.VISIBLE);
@@ -264,6 +306,7 @@ public class SubmissionList extends AppCompatActivity {
             @Bind(R.id.title) TextView title;
             @Bind(R.id.createdTime) TextView createdTime;
             @Bind(R.id.subreddit) TextView subReddit;
+            @Bind(R.id.upvotes) TextView upVotes;
             @Bind(R.id.nsfw) TextView nsfw;
             @Bind(R.id.thumbnail) ImageView thumb;
 

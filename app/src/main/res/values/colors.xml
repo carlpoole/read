@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#265fc4</color>
     <color name="colorPrimaryDark">#174d94</color>
+    <color name="colorUpvotes">#1bd434</color>
     <color name="colorAccent">#fd9f35</color>
     <color name="colorNSFW">#CC0000</color>
 </resources>

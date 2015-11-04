@@ -9,7 +9,7 @@
     tools:context=".List"
     tools:showIn="@layout/activity_list">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <codes.carl.read.FixedSwipeRefreshLayout
         android:id="@+id/swiper"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -20,6 +20,6 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"/>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </codes.carl.read.FixedSwipeRefreshLayout>
 
 </RelativeLayout>
