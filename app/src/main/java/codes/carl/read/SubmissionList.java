@@ -37,14 +37,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SubmissionList extends AppCompatActivity {
 
-    @Bind(R.id.posts) ListView posts;
-    @Bind(R.id.swiper) SwipeRefreshLayout swiper;
-    @Bind(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.posts) ListView posts;
+    @BindView(R.id.swiper) SwipeRefreshLayout swiper;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     RedditClient reddit;
     SubredditPaginator frontPage;
@@ -303,12 +303,12 @@ public class SubmissionList extends AppCompatActivity {
         }
 
         class ViewHolder{
-            @Bind(R.id.title) TextView title;
-            @Bind(R.id.createdTime) TextView createdTime;
-            @Bind(R.id.subreddit) TextView subReddit;
-            @Bind(R.id.upvotes) TextView upVotes;
-            @Bind(R.id.nsfw) TextView nsfw;
-            @Bind(R.id.thumbnail) ImageView thumb;
+            @BindView(R.id.title) TextView title;
+            @BindView(R.id.createdTime) TextView createdTime;
+            @BindView(R.id.subreddit) TextView subReddit;
+            @BindView(R.id.upvotes) TextView upVotes;
+            @BindView(R.id.nsfw) TextView nsfw;
+            @BindView(R.id.thumbnail) ImageView thumb;
 
             public ViewHolder(View view){
                 ButterKnife.bind(this,view);

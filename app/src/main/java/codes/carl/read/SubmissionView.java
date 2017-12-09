@@ -20,13 +20,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dean.jraw.models.Submission;
 import java.io.IOException;
 
-import butterknife.Bind;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SubmissionView extends AppCompatActivity {
 
-    @Bind(R.id.textPost) TextView textPost;
-    @Bind(R.id.otherPost) WebView otherPost;
+    @BindView(R.id.textPost) TextView textPost;
+    @BindView(R.id.otherPost) WebView otherPost;
 
     Submission sub;
 

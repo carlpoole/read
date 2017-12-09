@@ -23,12 +23,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import butterknife.Bind;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CommentsView extends AppCompatActivity {
 
-    @Bind(R.id.comments) ListView comments;
+    @BindView(R.id.comments) ListView comments;
     Submission sub;
     CommentNode commentNode;
     CommentsAdapter commentsAdapter;
@@ -146,8 +147,8 @@ public class CommentsView extends AppCompatActivity {
         }
 
         class ViewHolder{
-            @Bind(R.id.comment_author) TextView author;
-            @Bind(R.id.comment_body) TextView body;
+            @BindView(R.id.comment_author) TextView author;
+            @BindView(R.id.comment_body) TextView body;
 
             public ViewHolder(View view){
                 ButterKnife.bind(this,view);
